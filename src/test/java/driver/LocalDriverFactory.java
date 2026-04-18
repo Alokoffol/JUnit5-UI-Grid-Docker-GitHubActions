@@ -10,22 +10,25 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 public class LocalDriverFactory {
 
     public static WebDriver createDriver(String browserName) {
-        boolean isCI = "true".equals(System.getenv("CI"));
-        boolean headless = isCI || Boolean.parseBoolean(System.getProperty("headless", "false"));
+        String browser = browserName.toLowerCase();
 
-        if ("chrome".equalsIgnoreCase(browserName)) {
+        if ("chrome".equals(browser)) {
             WebDriverManager.chromedriver().setup();
-            // ИСПОЛЬЗУЕМ ChromeOptionsConfig вместо создания новых опций
-            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(headless);
+            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(false);
+            // Для CI важно добавить аргументы, если их нет в конфиге
+            // options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
             return new ChromeDriver(options);
 
-        } else if ("firefox".equalsIgnoreCase(browserName)) {
+        } else if ("firefox".equals(browser)) {
             WebDriverManager.firefoxdriver().setup();
             FirefoxOptions options = new FirefoxOptions();
-            if (headless) {
-                options.addArguments("--headless");
-                options.addArguments("--width=1920", "--height=1080");
-            }
+
+            // ВАЖНО: В GitHub Actions (Linux) Firefox должен быть headless
+            options.addArguments("--headless");
+
+            // Дополнительно можно увеличить таймаут старта, так как в CI все медленнее
+            // options.setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy.EAGER);
+
             return new FirefoxDriver(options);
 
         } else {
