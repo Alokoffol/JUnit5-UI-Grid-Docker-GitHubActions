@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class LoginTests extends TestBase {
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome"})
+    @ValueSource(strings = {"chrome", "firefox"})
     @DisplayName("Успешный логин")
     @Story("Успешный логин")
     public void testSuccessfulLogin(String browser) {
@@ -34,7 +34,7 @@ public class LoginTests extends TestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome"})
+    @ValueSource(strings = {"chrome", "firefox"})
     @DisplayName("Неверный логин")
     @Story("Неверный логин")
     public void testInvalidLogin(String browser) {
@@ -53,7 +53,7 @@ public class LoginTests extends TestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome"})
+    @ValueSource(strings = {"chrome", "firefox"})
     @DisplayName("Пустые поля логин и пароль")
     @Story("Пустые поля")
     public void testEmptyFields(String browser) {

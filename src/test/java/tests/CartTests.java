@@ -71,7 +71,7 @@ public class CartTests extends TestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome"})
+    @ValueSource(strings = {"chrome", "firefox"})
     @DisplayName("Продолжить покупки из корзины")
     @Story("Продолжить покупки")
     public void testContinueShopping(String browser) {
