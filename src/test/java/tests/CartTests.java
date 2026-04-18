@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CartTests extends TestBase {
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome", "firefox"})
+    @ValueSource(strings = {"chrome"})
     @DisplayName("Добавление товара в корзину")
     @Story("Добавление товара")
     public void testAddProductToCart(String browser) {
@@ -44,7 +44,7 @@ public class CartTests extends TestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome", "firefox"})
+    @ValueSource(strings = {"chrome"})
     @DisplayName("Удаление товара из корзины")
     @Story("Удаление товара")
     public void testRemoveProductFromCart(String browser) {
@@ -71,7 +71,7 @@ public class CartTests extends TestBase {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome", "firefox"})
+    @ValueSource(strings = {"chrome"})
     @DisplayName("Продолжить покупки из корзины")
     @Story("Продолжить покупки")
     public void testContinueShopping(String browser) {

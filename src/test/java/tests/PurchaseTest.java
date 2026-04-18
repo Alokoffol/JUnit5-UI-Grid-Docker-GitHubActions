@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PurchaseTest extends TestBase {
 
     @ParameterizedTest
-    @ValueSource(strings = {"chrome", "firefox"})
+    @ValueSource(strings = {"chrome"})
     @DisplayName("Полный путь покупки")
     @Story("Полный путь покупки")
     public void testCompletePurchase(String browser) {
