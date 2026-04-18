@@ -14,7 +14,7 @@ public class TestBase {
 
     @BeforeEach
     void setUp() {
-        // Пустой, так как инициализация теперь в тесте
+        // Пустой, инициализация в тестах
     }
 
     protected void initDriver(String browserName) {
@@ -23,12 +23,11 @@ public class TestBase {
         }
 
         boolean useGrid = Boolean.parseBoolean(System.getProperty("useGrid", "false"));
-        String browser = System.getProperty("browser", "chrome");
 
         if (useGrid) {
-            driver = RemoteDriverFactory.createDriver(browser);
+            driver = RemoteDriverFactory.createDriver(browserName);
         } else {
-            driver = LocalDriverFactory.createDriver(browser);
+            driver = LocalDriverFactory.createDriver(browserName);
         }
 
         driver.get(BASE_URL);

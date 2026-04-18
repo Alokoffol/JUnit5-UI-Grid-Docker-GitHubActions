@@ -13,39 +13,29 @@ public class LocalDriverFactory {
     public static WebDriver createDriver(String browserName) {
         String browser = browserName.toLowerCase();
 
-        // Определяем headless режим
+        // Определяем, запущены ли тесты в CI (GitHub Actions)
         boolean isCI = "true".equals(System.getenv("CI"));
-        boolean headless = isCI || Boolean.parseBoolean(System.getProperty("headless", "false"));
 
         if ("chrome".equals(browser)) {
             WebDriverManager.chromedriver().setup();
-            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(headless);
-
-            // Критические настройки для headless в CI
-            if (headless) {
-                options.addArguments("--headless=new");
-                options.addArguments("--no-sandbox");
-                options.addArguments("--disable-dev-shm-usage");
-                options.addArguments("--disable-gpu");
-                options.addArguments("--window-size=1920,1080");
-            }
-
+            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(isCI);
             return new ChromeDriver(options);
 
         } else if ("firefox".equals(browser)) {
             WebDriverManager.firefoxdriver().setup();
             FirefoxOptions options = new FirefoxOptions();
 
-            if (headless) {
+            if (isCI) {
+                // В CI — headless режим
                 options.addArguments("--headless");
                 options.addArguments("--no-sandbox");
-            }
-
-            WebDriver driver = new FirefoxDriver(options);
-            if (headless) {
+                WebDriver driver = new FirefoxDriver(options);
                 driver.manage().window().setSize(new Dimension(1920, 1080));
+                return driver;
+            } else {
+                // Локально — обычный режим с GUI
+                return new FirefoxDriver(options);
             }
-            return driver;
 
         } else {
             throw new IllegalArgumentException("Unknown browser: " + browserName);
