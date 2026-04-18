@@ -10,26 +10,32 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 public class LocalDriverFactory {
 
     public static WebDriver createDriver(String browserName) {
+        // Проверяем, запущены ли тесты в CI (GitHub Actions)
+        boolean isCI = "true".equals(System.getenv("CI"));
+        boolean headless = isCI || Boolean.parseBoolean(System.getProperty("headless", "false"));
 
-        // Приводим название к нижнему регистру, чтобы "Chrome", "CHROME" и "chrome" работали одинаково
-        String browser = browserName.toLowerCase();
-
-        if ("chrome".equals(browser)) {
-            // Настраиваем драйвер Chrome
+        if ("chrome".equalsIgnoreCase(browserName)) {
             WebDriverManager.chromedriver().setup();
-            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(false);
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--start-maximized");
+            if (headless) {
+                options.addArguments("--headless=new");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
+            }
             return new ChromeDriver(options);
 
-        } else if ("firefox".equals(browser)) {
-            // Настраиваем драйвер Firefox
+        } else if ("firefox".equalsIgnoreCase(browserName)) {
             WebDriverManager.firefoxdriver().setup();
             FirefoxOptions options = new FirefoxOptions();
-            // Здесь можно добавить специфичные настройки для Firefox, если нужно
+            if (headless) {
+                options.addArguments("--headless");
+            }
             return new FirefoxDriver(options);
 
         } else {
-            // Если передан неизвестный браузер
-            throw new IllegalArgumentException("Неподдерживаемый браузер: " + browserName);
+            throw new IllegalArgumentException("Unknown browser: " + browserName);
         }
     }
 }
