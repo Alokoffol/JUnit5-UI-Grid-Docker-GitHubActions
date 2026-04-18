@@ -2,10 +2,16 @@ name: Selenium Grid Tests with Allure Report
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    branches: [ master ]
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
@@ -28,23 +34,20 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Start Selenium Grid
-        run: docker-compose up -d
+      - name: Run tests locally (without Docker)
+        run: mvn clean test -Dbrowser=chrome
 
-      - name: Wait for Grid
-        run: sleep 10
-
-      - name: Run tests
-        run: mvn clean test -DuseGrid=true -Dbrowser=chrome
-
-      - name: Stop Grid
+      - name: Upload test results
         if: always()
-        run: docker-compose down
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: target/allure-results
+          retention-days: 7
 
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@v1.9
         if: always()
-        id: allure-report
         with:
           allure_results: target/allure-results
           gh_pages: gh-pages
@@ -58,4 +61,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: allure-history
-          keep_files: trues
+          keep_files: true
