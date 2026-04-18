@@ -1,6 +1,7 @@
 package driver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,22 +15,27 @@ public class LocalDriverFactory {
 
         if ("chrome".equals(browser)) {
             WebDriverManager.chromedriver().setup();
+            // Используем твой конфиг, он отличный
             ChromeOptions options = ChromeOptionsConfig.createChromeOptions(false);
-            // Для CI важно добавить аргументы, если их нет в конфиге
-            // options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
             return new ChromeDriver(options);
 
         } else if ("firefox".equals(browser)) {
             WebDriverManager.firefoxdriver().setup();
             FirefoxOptions options = new FirefoxOptions();
 
-            // ВАЖНО: В GitHub Actions (Linux) Firefox должен быть headless
+            // ВАЖНО: Только headless. Никаких --width/--height!
             options.addArguments("--headless");
 
-            // Дополнительно можно увеличить таймаут старта, так как в CI все медленнее
-            // options.setPageLoadStrategy(org.openqa.selenium.PageLoadStrategy.EAGER);
+            // Для стабильности в Linux/CI можно добавить:
+            options.addArguments("--no-sandbox");
 
-            return new FirefoxDriver(options);
+            WebDriver driver = new FirefoxDriver(options);
+
+            // Явно задаем размер окна для Firefox, так как аргументы не работают
+            // Это предотвратит проблемы с версткой в headless режиме
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+
+            return driver;
 
         } else {
             throw new IllegalArgumentException("Unknown browser: " + browserName);
