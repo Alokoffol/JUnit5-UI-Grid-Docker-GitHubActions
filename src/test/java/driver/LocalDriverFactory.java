@@ -10,20 +10,13 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 public class LocalDriverFactory {
 
     public static WebDriver createDriver(String browserName) {
-        // Проверяем, запущены ли тесты в CI (GitHub Actions)
         boolean isCI = "true".equals(System.getenv("CI"));
         boolean headless = isCI || Boolean.parseBoolean(System.getProperty("headless", "false"));
 
         if ("chrome".equalsIgnoreCase(browserName)) {
             WebDriverManager.chromedriver().setup();
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--start-maximized");
-            if (headless) {
-                options.addArguments("--headless=new");
-                options.addArguments("--no-sandbox");
-                options.addArguments("--disable-dev-shm-usage");
-                options.addArguments("--disable-gpu");
-            }
+            // ИСПОЛЬЗУЕМ ChromeOptionsConfig вместо создания новых опций
+            ChromeOptions options = ChromeOptionsConfig.createChromeOptions(headless);
             return new ChromeDriver(options);
 
         } else if ("firefox".equalsIgnoreCase(browserName)) {
@@ -31,6 +24,7 @@ public class LocalDriverFactory {
             FirefoxOptions options = new FirefoxOptions();
             if (headless) {
                 options.addArguments("--headless");
+                options.addArguments("--width=1920", "--height=1080");
             }
             return new FirefoxDriver(options);
 
