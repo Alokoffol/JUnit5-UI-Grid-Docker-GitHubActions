@@ -23,11 +23,12 @@ public class TestBase {
         }
 
         boolean useGrid = Boolean.parseBoolean(System.getProperty("useGrid", "false"));
+        String browser = System.getProperty("browser", "chrome");
 
         if (useGrid) {
-            driver = RemoteDriverFactory.createDriver(browserName);
+            driver = RemoteDriverFactory.createDriver(browser);
         } else {
-            driver = LocalDriverFactory.createDriver(browserName);
+            driver = LocalDriverFactory.createDriver(browser);
         }
 
         driver.get(BASE_URL);

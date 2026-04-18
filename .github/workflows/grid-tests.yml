@@ -27,13 +27,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Chrome
-        run: |
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          google-chrome --version
+      - name: Start Selenium Grid
+        run: docker-compose up -d
+
+      - name: Wait for Grid
+        run: sleep 15
+
+      - name: Check Grid status
+        run: curl -s http://localhost:4444/status
 
       - name: Cache Maven dependencies
         uses: actions/cache@v4
@@ -42,8 +43,12 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Run tests
-        run: mvn clean test -Dbrowser=chrome
+      - name: Run tests with Grid
+        run: mvn clean test -DuseGrid=true -Dbrowser=chrome
+
+      - name: Stop Grid
+        if: always()
+        run: docker-compose down
 
       - name: Generate Allure Report with Maven
         run: mvn allure:report
