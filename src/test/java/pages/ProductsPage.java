@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ProductsPage extends BasePage {
 
-    // Локаторы
     private final By pageTitle = By.className("title");
     private final By addToCartButton = By.cssSelector("[data-test^='add-to-cart']");
     private final By cartBadge = By.className("shopping_cart_badge");
@@ -19,7 +18,6 @@ public class ProductsPage extends BasePage {
         super(driver);
     }
 
-    // Существующие методы
     public String getPageTitle() {
         return waitForElement(pageTitle).getText();
     }
@@ -44,7 +42,6 @@ public class ProductsPage extends BasePage {
         clickElement(shoppingCartLink);
     }
 
-    // ✅ НОВЫЙ МЕТОД: проверить, отображается ли список товаров
     public boolean isProductListDisplayed() {
         List<WebElement> products = driver.findElements(productList);
         return !products.isEmpty() && products.get(0).isDisplayed();

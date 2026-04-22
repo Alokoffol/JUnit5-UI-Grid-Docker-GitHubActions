@@ -13,7 +13,6 @@ public class LocalDriverFactory {
     public static WebDriver createDriver(String browserName) {
         String browser = browserName.toLowerCase();
 
-        // Определяем, запущены ли тесты в CI (GitHub Actions)
         boolean isCI = "true".equals(System.getenv("CI"));
 
         if ("chrome".equals(browser)) {
@@ -26,14 +25,12 @@ public class LocalDriverFactory {
             FirefoxOptions options = new FirefoxOptions();
 
             if (isCI) {
-                // В CI — headless режим
                 options.addArguments("--headless");
                 options.addArguments("--no-sandbox");
                 WebDriver driver = new FirefoxDriver(options);
                 driver.manage().window().setSize(new Dimension(1920, 1080));
                 return driver;
             } else {
-                // Локально — обычный режим с GUI
                 return new FirefoxDriver(options);
             }
 

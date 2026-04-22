@@ -16,7 +16,6 @@ public class RemoteDriverFactory {
             URL gridUrl = new URL(GRID_URL);
 
             if ("chrome".equalsIgnoreCase(browserName)) {
-                // Используем ChromeOptionsConfig для Chrome в Grid
                 ChromeOptions options = ChromeOptionsConfig.createChromeOptions(true);
                 return new RemoteWebDriver(gridUrl, options);
             }

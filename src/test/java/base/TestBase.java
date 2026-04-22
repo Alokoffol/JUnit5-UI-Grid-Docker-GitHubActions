@@ -12,11 +12,6 @@ public class TestBase {
 
     protected WebDriver driver;
 
-    @BeforeEach
-    void setUp() {
-        // Пустой, инициализация в тестах
-    }
-
     protected void initDriver(String browserName) {
         if (driver != null) {
             driver.quit();

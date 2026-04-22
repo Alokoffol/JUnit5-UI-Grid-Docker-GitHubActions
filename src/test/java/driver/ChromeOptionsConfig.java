@@ -4,7 +4,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-// Настройки хрома
 public class ChromeOptionsConfig {
 
     public static ChromeOptions createChromeOptions(boolean headless) {

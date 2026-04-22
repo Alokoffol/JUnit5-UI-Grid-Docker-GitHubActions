@@ -29,4 +29,4 @@ services:
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
     volumes:
-      - /dev/shm:/dev/shmelenium-hubONS=2
+      - /dev/shm:/dev/shm
